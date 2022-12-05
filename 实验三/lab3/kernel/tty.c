@@ -220,6 +220,7 @@ void Handle_ctrl_z(TTY *p_tty, u32 key)
         u32 temp_key = key_logs[LOG_num - 1];
         if (temp_key == '\b')
         {
+            
             if (LOG_num >= 2)
             {
                 temp_key = key_logs[LOG_num - 2];
@@ -230,6 +231,6 @@ void Handle_ctrl_z(TTY *p_tty, u32 key)
         {
             put_key(p_tty, '\b');
         }
-        LOG_num--;
+        LOG_num=LOG_num-2;
     }
 }
