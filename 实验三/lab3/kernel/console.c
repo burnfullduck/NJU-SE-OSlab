@@ -26,6 +26,7 @@ PRIVATE void set_video_start_addr(u32 addr);
 PRIVATE void flush(CONSOLE *p_con);
 
 //新加代码
+int new_length;
 extern int findmode;
 int tabstack[200];	
 int p_tab = -1;	   //tab栈顶位置
@@ -261,7 +262,7 @@ PUBLIC void scroll_screen(CONSOLE *p_con, int direction)
 	set_cursor(p_con->cursor);
 }
 
-//new code
+//新函数
 int dis_enter(int pos)
 {
 	int ret = 0;
@@ -283,7 +284,7 @@ PUBLIC void stop_find(CONSOLE *p_con)
 			*(p_vmem - 2 * i - 1) = DEFAULT_CHAR_COLOR;
 		}
 	}
-	for (int i = 0; i < length; i++)
+	for (int i = 0; i < new_length; i++)
 		out_char(p_con, '\b');
 }
 PUBLIC void find(CONSOLE *p_con)
@@ -292,8 +293,16 @@ PUBLIC void find(CONSOLE *p_con)
 	int findptr = 0;
 	u8 *p_vmem = (u8 *)(V_MEM_BASE + p_con->cursor * 2);
 	length = p_con->cursor - p_con->find_pos;
+	new_length = length;
+	for(int i = 0;i < length;i++){
+		if(*(p_vmem-2*i-2)==' '&&*(p_vmem-2*i-1)==TAB_CHAR_COLOR){
+			new_length=new_length-3;
+			i+=3;
+		}
+	}
 
-	for (int i = 0; i < p_con->cursor - p_con->original_addr; i++)
+
+	for (int i = length; i < p_con->cursor - p_con->original_addr; i++)
 	{
 		int temp = 1;
 		for (int j = 0; j < length; j++){
@@ -301,6 +310,7 @@ PUBLIC void find(CONSOLE *p_con)
 				if (*(p_vmem - 2 * j - 2 * i - 2) == ' ')   //若为空格判断是否为TAB
 				{
 					if(*(p_vmem - 2 * j - 2 * i - 1) == TAB_CHAR_COLOR && *(p_vmem - 2 * j - 1) == TAB_CHAR_COLOR){//若都为TAB
+						//j=+3;
 						continue;
 					}else if(*(p_vmem - 2 * j - 2 * i - 1) != TAB_CHAR_COLOR && *(p_vmem - 2 * j - 1) != TAB_CHAR_COLOR){//若都为空格
 						continue;

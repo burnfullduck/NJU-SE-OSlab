@@ -54,7 +54,7 @@ PUBLIC void task_tty()
         {
             tty_do_read(p_tty);
             tty_do_write(p_tty);
-            if ((count > 20 * 60000 || count == 0) && findmode == 0) //只有mode0才能清屏
+            if ((count > 20 * 100000 || count == 0) && findmode == 0) //只有mode0才能清屏
             {
                 for (int j = 0; j < 4000; j++) //(80*25)*2bt
                     out_char(p_tty->p_console, '\b');
